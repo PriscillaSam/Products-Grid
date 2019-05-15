@@ -1,0 +1,17 @@
+{
+  "name": "products-grid",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Build a grid of product items and ads",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "json-server server/index.js --routes server/routes.json --middlewares server/handle-delay.js server/handle-ads.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "cool-ascii-faces": "^1.3.4",
+    "json-server": "^0.9.6"
+  }
+}
