@@ -1,0 +1,36 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "extends": "airbnb",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "prop-types": [
+      0
+    ],
+    "no-console": 0,
+    "no-unused-vars": 0,
+    "max-len": [
+      2,
+      80,
+      4
+    ],
+    "valid-jsdoc": "error",
+    "linebreak-style": "off",
+    "consistent-return": "off",
+    "no-undef": "off",
+    "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": "off",
+    "prefer-promise-reject-errors": "off",
+    "react/forbid-prop-types": "off"
+  }
+}
