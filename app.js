@@ -3,15 +3,17 @@
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import jsonServer from 'json-server';
+import cors from 'cors';
+import config from './webpack.config';
 
 import data from './server';
-import config from './webpack.config';
 import handleAds from './server/handle-ads';
 import handleDelays from './server/handle-delay';
 
 const apiServer = jsonServer.create();
 const router = jsonServer.router(data());
 
+apiServer.use(cors());
 apiServer.use('/api/', router);
 apiServer.use(
   handleDelays,
