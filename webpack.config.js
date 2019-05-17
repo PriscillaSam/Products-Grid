@@ -28,6 +28,16 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    extensions: ['.jsx', '.js'],
+    alias: {
+      Components: path.resolve(__dirname, 'public/src/components'),
+      Atoms: path.resolve(__dirname, 'public/src/components/atoms/'),
+      Molecules: path.resolve(__dirname, 'public/src/components/molecules/'),
+      Constants: path.resolve(__dirname, 'public/src/constants/'),
+      Utilities: path.resolve(__dirname, 'public/src/utilities/'),
+    },
+  },
   plugins: [
     new HtmlWebpackPlugin({ template: './public/index.html' }),
   ],
