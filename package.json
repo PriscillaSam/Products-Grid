@@ -8,7 +8,8 @@
     "start": "json-server server/index.js --routes server/routes.json --middlewares server/handle-delay.js server/handle-ads.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon --exec babel-node app.js",
-    "testing": "npm run build && node dist/app.js"
+    "testing": "npm run build && node dist/app.js",
+    "start:react": "webpack"
   },
   "author": "",
   "license": "",

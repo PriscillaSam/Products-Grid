@@ -41,10 +41,15 @@ display: flex;
 border-radius: 5px;
 background-color: ${colours.black};
 padding: 0px 10px;
+cursor: pointer;
 
 &:disabled {
   background-color: ${colours.gray};
   cursor: not-allowed;
+}
+
+&:focus {
+  outline: none;
 }
 `;
 

@@ -18,6 +18,7 @@ class App extends React.Component {
     sortOrder: 'Ascending',
     sortValue: '',
     hasPicked: false,
+    showBackButton: false,
   }
 
   async componentDidMount() {
@@ -41,19 +42,23 @@ class App extends React.Component {
     const bodyHeight = docHeight - windowHeight;
     const scrollPercentage = scroll / bodyHeight;
 
-    if (page === 2) {
-      const response = await fetchProducts(page);
-      this.setState({ productsToDisplay: response });
+    if (scroll > windowHeight) {
+      this.setState({ showBackButton: true });
+    } else {
+      this.setState({ showBackButton: false });
     }
 
-    if (productsToDisplay.length > 0 && scrollPercentage > 0.99) {
+    if (page === 2) {
+      const response = await fetchProducts(page);
+      this.setState({ productsToDisplay: response, page: page + 1 });
+    } else if (productsToDisplay.length > 0 && scrollPercentage > 0.99) {
+      const prefetched = await fetchProducts(page);
       this.setState({
         page: page + 1,
         products: [...products, ...productsToDisplay],
         productsToDisplay: [],
       });
 
-      const prefetched = await fetchProducts(page);
       this.setState({
         productsToDisplay: [...prefetched],
       });
@@ -84,6 +89,13 @@ class App extends React.Component {
     this.setState({ products: sortedArray, sortValue, hasPicked: true });
   }
 
+  handleSort = (sortValue, sortOrder) => () => this
+    .sortItem(sortValue, sortOrder);
+
+  scrollToTop = () => {
+    document.documentElement.scrollTop = 150;
+  }
+
   render() {
     const {
       products,
@@ -91,10 +103,13 @@ class App extends React.Component {
       showDropdown,
       sortOrder,
       hasPicked,
+      showBackButton,
     } = this.state;
     let count = 0;
+
     return (
       <>
+        <HorizontalRule />
         <Text text="Our Products" type="large" colourClass="gray" />
         <Container>
           <ButtonSection>
@@ -111,7 +126,7 @@ class App extends React.Component {
                   type="radio"
                   name="sortBy"
                   value="size"
-                  onClick={() => this.sortItem('size', sortOrder)}
+                  onClick={this.handleSort('size', sortOrder)}
                 />
                 <Label> Size</Label>
               </Item>
@@ -120,7 +135,7 @@ class App extends React.Component {
                   type="radio"
                   name="sortBy"
                   value="price"
-                  onClick={() => this.sortItem('price', sortOrder)}
+                  onClick={this.handleSort('price', sortOrder)}
                 />
                 <Label> Price</Label>
               </Item>
@@ -129,7 +144,7 @@ class App extends React.Component {
                   type="radio"
                   name="sortBy"
                   value="date"
-                  onClick={() => this.sortItem('date', sortOrder)}
+                  onClick={this.handleSort('date', sortOrder)}
                 />
                 <Label> Date</Label>
               </Item>
@@ -139,10 +154,48 @@ class App extends React.Component {
             {
               products.map((product, index) => {
                 count += 1;
-                return <Card fontDetails={product} index={index + 1} key={count} />;
+
+                return (
+                  <>
+                    <Card
+                      fontDetails={product}
+                      index={index + 1}
+                      key={count}
+                    />
+                    {
+                      count === 500
+                        ? (
+                          <Flex>
+                            <Text
+                              text="~ End of catalogue ~"
+                              type="large"
+                              colourClass="tan"
+                            />
+                          </Flex>
+                        )
+                        : index === products.length - 1
+                          ? (
+                            <Flex>
+                              <Icon
+                                className="fa fa-spin fa-spinner fa-5x"
+                                color="tan"
+                              />
+                            </Flex>
+                          ) : ''
+                    }
+                  </>
+                );
               })
             }
           </ProductsSection>
+          {
+            showBackButton
+            && (
+              <BackButton onClick={this.scrollToTop}>
+                <Icon className="fa fa-arrow-up" color="white" />
+              </BackButton>
+            )
+          }
         </Container>
       </>
     );
@@ -157,21 +210,32 @@ const ProductsSection = styled.div`
   width: 70%;
 `;
 
+const Flex = styled.div`
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+`;
+
 const Container = styled.div`
   background-color: ${colors.lightGrey};
-  padding: 10px;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  padding-left: 20px;
 `;
 
 const ButtonSection = styled.div`
 position: absolute;
 `;
 
-const RadioButton = styled.input`
-
-`;
+const RadioButton = styled.input``;
 
 const Item = styled.div`
   display: flex;
+`;
+
+const Icon = styled.i`
+color: ${props => colors[props.color]};
 `;
 
 const Label = styled.div`
@@ -183,5 +247,25 @@ const Label = styled.div`
 const RadioContainer = styled.div`
   margin-top: 15px;
 `;
+
+const BackButton = styled(Flex)`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: fixed;
+  cursor: pointer;
+  bottom: 20px;
+  right: 20px;
+  background-color: ${colors.gray};
+  box-shadow: 0.5rem 0.5rem 3rem rgba(0,0,0,0.2);
+`;
+
+const HorizontalRule = styled.div`
+  width: 50px;
+  height: 1px;
+  background-color: ${colors.sienna};
+  margin: 0;
+  padding: 0;
+  `;
 
 ReactDOM.render(<App />, document.getElementById('root'));

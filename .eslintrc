@@ -32,6 +32,7 @@
     "react/jsx-filename-extension": "off",
     "prefer-promise-reject-errors": "off",
     "react/forbid-prop-types": "off",
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "off",
+    "no-nested-ternary": "off"
   }
 }
