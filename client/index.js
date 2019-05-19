@@ -4,9 +4,10 @@ import styled from 'styled-components';
 
 import Text from 'Atoms/Text';
 import Card from 'Molecules/Card';
-import Dropdown from 'Molecules/Dropdown';
 import colors from 'Constants/colours';
 import fetchProducts from 'Utilities/actions';
+import checkDivisibility from 'Utilities/getIndex';
+import getRandomNumber from 'Utilities/getRandomNumber';
 
 class App extends React.Component {
   state = {
@@ -14,10 +15,7 @@ class App extends React.Component {
     productsToDisplay: [],
     page: 1,
     showDropdown: false,
-    buttonText: 'Sort Products',
-    sortOrder: 'Ascending',
     sortValue: '',
-    hasPicked: false,
     showBackButton: false,
   }
 
@@ -35,7 +33,9 @@ class App extends React.Component {
   }
 
   handleScrollEvent = async () => {
-    const { page, productsToDisplay, products } = this.state;
+    const {
+      page, productsToDisplay, products, sortValue,
+    } = this.state;
     const docHeight = document.body.clientHeight;
     const scroll = window.scrollY;
     const windowHeight = window.innerHeight;
@@ -49,15 +49,15 @@ class App extends React.Component {
     }
 
     if (page === 2) {
-      const response = await fetchProducts(page);
+      const response = await fetchProducts(page, sortValue);
       this.setState({ productsToDisplay: response, page: page + 1 });
-    } else if (productsToDisplay.length > 0 && scrollPercentage > 0.99) {
-      const prefetched = await fetchProducts(page);
+    } else if (productsToDisplay.length > 0 && scrollPercentage > 0.999) {
       this.setState({
         page: page + 1,
         products: [...products, ...productsToDisplay],
         productsToDisplay: [],
       });
+      const prefetched = await fetchProducts(page, sortValue);
 
       this.setState({
         productsToDisplay: [...prefetched],
@@ -65,32 +65,17 @@ class App extends React.Component {
     }
   }
 
-  toggleSortOrder = (sortOrder) => {
-    this.setState({ sortOrder, buttonText: sortOrder, showDropdown: false },
-      () => {
-        const { sortValue } = this.state;
-        this.sortItem(sortValue, sortOrder);
-      });
+  sortItem = async (sortValue) => {
+    this.setState({
+      products: [], productsToDisplay: [],
+    });
+    const products = await fetchProducts(1, sortValue);
+    this.setState({
+      products, sortValue, page: 2,
+    });
   }
 
-  sortItem = (sortValue, sortOrder) => {
-    const { products } = this.state;
-    const sortedArray = products
-      .sort((a, b) => {
-        if (sortValue === 'date') {
-          return sortOrder === 'Ascending'
-            ? Date.parse(a.date) - Date.parse(b.date)
-            : Date.parse(b.date) - Date.parse(a.date);
-        }
-        return sortOrder === 'Ascending'
-          ? a[sortValue] - b[sortValue]
-          : b[sortValue] - a[sortValue];
-      });
-    this.setState({ products: sortedArray, sortValue, hasPicked: true });
-  }
-
-  handleSort = (sortValue, sortOrder) => () => this
-    .sortItem(sortValue, sortOrder);
+  handleSort = sortValue => () => this.sortItem(sortValue);
 
   scrollToTop = () => {
     document.documentElement.scrollTop = 150;
@@ -99,10 +84,6 @@ class App extends React.Component {
   render() {
     const {
       products,
-      buttonText,
-      showDropdown,
-      sortOrder,
-      hasPicked,
       showBackButton,
     } = this.state;
     let count = 0;
@@ -113,20 +94,22 @@ class App extends React.Component {
         <Text text="Our Products" type="large" colourClass="gray" />
         <Container>
           <ButtonSection>
-            <Dropdown
-              toggleDropdownVisibility={this.toggleDropdownVisibility}
-              buttonText={buttonText}
-              showDropdown={showDropdown}
-              toggleSortOrder={this.toggleSortOrder}
-              hasPicked={hasPicked}
-            />
+            <SortText>
+              <Text
+                text="Sort Products"
+                type="fontText"
+                size={18}
+                colourClass="gray"
+              />
+              <Icon className="fa fa-sort" color="gray" />
+            </SortText>
             <RadioContainer>
               <Item>
                 <RadioButton
                   type="radio"
                   name="sortBy"
                   value="size"
-                  onClick={this.handleSort('size', sortOrder)}
+                  onClick={this.handleSort('size')}
                 />
                 <Label> Size</Label>
               </Item>
@@ -135,7 +118,7 @@ class App extends React.Component {
                   type="radio"
                   name="sortBy"
                   value="price"
-                  onClick={this.handleSort('price', sortOrder)}
+                  onClick={this.handleSort('price')}
                 />
                 <Label> Price</Label>
               </Item>
@@ -143,16 +126,28 @@ class App extends React.Component {
                 <RadioButton
                   type="radio"
                   name="sortBy"
-                  value="date"
-                  onClick={this.handleSort('date', sortOrder)}
+                  value="id"
+                  onClick={this.handleSort('id')}
                 />
-                <Label> Date</Label>
+                <Label> Product id</Label>
               </Item>
             </RadioContainer>
           </ButtonSection>
           <ProductsSection>
             {
-              products.map((product, index) => {
+              products.length === 0
+              && (
+                <Flex>
+                  <Icon
+                    className="fa fa-spin fa-spinner fa-5x"
+                    color="tan"
+                  />
+                </Flex>
+              )
+            }
+            {
+              products.length > 0
+              && products.map((product, index) => {
                 count += 1;
 
                 return (
@@ -162,6 +157,21 @@ class App extends React.Component {
                       index={index + 1}
                       key={count}
                     />
+                    {
+                      checkDivisibility(count, 20)
+                      && (
+                        <AdSection>
+                          <Text
+                            text="A word from our sponsors"
+                            colourClass="gray"
+                          />
+                          <Image
+                            className="ad"
+                            src={`/ads/?r=${getRandomNumber()}`}
+                          />
+                        </AdSection>
+                      )
+                    }
                     {
                       count === 500
                         ? (
@@ -228,11 +238,39 @@ const ButtonSection = styled.div`
 position: absolute;
 `;
 
-const RadioButton = styled.input``;
+const SortText = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i {
+    margin-left: 10px;
+  }
+`;
+
+const RadioButton = styled.input`
+margin-bottom: 20px;
+`;
 
 const Item = styled.div`
   display: flex;
 `;
+
+const AdSection = styled(Flex)`
+  background-color: ${colors.white};
+  width: 80%;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  box-shadow: 0.5rem 0.5rem 3rem rgba(0,0,0,0.2);
+  justify-content: space-between;
+
+  p {
+    font-size: 36px;
+  }
+
+`;
+
+const Image = styled.img``;
 
 const Icon = styled.i`
 color: ${props => colors[props.color]};
@@ -241,7 +279,9 @@ color: ${props => colors[props.color]};
 const Label = styled.div`
   margin-left: 10px;
   margin-top: 3px;
-  font-size: 14px;
+  font-size: 15px;
+  color: ${colors.gray};
+
 `;
 
 const RadioContainer = styled.div`

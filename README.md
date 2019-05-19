@@ -3,7 +3,6 @@ Products Grid
 
 This is an ecommerce site, where you can buy all sorts of ascii faces like `(ノ・∀・)ノ` and `¯_(ツ)_/¯`, in a wide variety of font sizes. The homepage should display a list of products for people to browse.
 
-Please read the instructions and FAQ below before beginning.
 
 Features
 ----
@@ -33,37 +32,29 @@ Products API
 - To paginate results use the `_page` parameter, eg: `/api/products?_page=10&_limit=15` (returns 15 results starting from the 10th page).
 - To sort results use the `_sort` parameter, eg: `/api/products?_sort=price`. Valid sort values are `price`, `size` and `id`.
 
-FAQ
+
+Features implemented
+----
+All required features were implemented
+
+
+Running the app
 ----
 
-### How do I start the app?
+On the terminal, run the following commands
+- git clone `git@github.com:PriscillaSam/Products-Grid.git` (SSH) or `https://github.com/PriscillaSam/Products-Grid.git` for https
+- npm install
+- npm start
 
-Start with `npm start`. The server will look for any files you add to the `public/` directory.
+Navigate to `localhost:3000` on the browser to view the application.
 
-### What libraries/frameworks, packages, tools can I use?
 
-You need to use React.js as the main js library and Git for version control, but other than that you are free to work with any package of your choice with two exceptions - you should not use any package/plugin for the *loading of products on scroll* and *formatting of dates*. We want to see how you solve problems by writing your own JS code, so using any package/plugin for the above two features will immediately make us reject your submission.
+What would I have done given Extra time
+----
 
-### What about sort order (ascending / descending)?
+I would have written tests for the components.
 
-We don't need to worry about alternate sort order for this project, we'll just use ascending-order for everything.
+Project Management
+----
+Pivotal tracker is the project management tool that was used. The board can be seen [here](https://www.pivotaltracker.com/n/projects/2348651)
 
-### Can I make changes to the backend or API?
-
-No, your final solution should not include any changes to the server code.
-
-### What should I do when I'm finished?
-
-Please use Git and make regular commits while working on this app. After you have finished your work upload your app to a Github repo, and then send us an email with the link to that repo along with information about which features you have included in your solution, and provide clear instructions on how we can run your code and see the results in a browser.
-
-### How is the exam graded?
-
-We are looking for idiomatic use of javascript, and the ability to solve the problems with code that is clean and easy to read. Even though it's very small in scope, please show us how you would use the language and conventions to structure things in a clear and maintainable way. Please don't go overboard with using external packages/plugins and don't try to introduce extra complexity in your code just for the sake of showcasing your skills.
-
-Try to create a simple and elegant UI for this. You are free to use SASS or any other CSS pre-processor of your choice, but plain CSS is fine too.
-
-### This looks like it will take a while and I'm pretty busy
-
-You're right! With something open-ended like this you could easily spend a week polishing and getting it just right. We don't expect you to do this, and we'll do our best to make sure you're not disadvantaged by this.
-
-When we grade this exam we're not giving you a "score out of 100" for how many features you complete. We're trying to get some insight into your process, to see the way you work. So, by all means, spend more time if you want to. But you are also free to leave certain features out and give a written explanation of how you would approach it. The best approach is to spend your time on the features that you think is the best way to show us your strengths and experience.

@@ -9,10 +9,10 @@ import dateFormatter from 'Utilities/dateFormatter';
 
 const CardComponent = ({ fontDetails, index }) => {
   const {
-    id, size, price, face, date,
+    size, price, face, date,
   } = fontDetails;
 
-  const isDivisibleBy2 = divisibilityChecker(index);
+  const isDivisibleBy2 = divisibilityChecker(index, 2);
   const formattedDate = dateFormatter(date);
   const cardColor = isDivisibleBy2 ? 'black' : 'tan';
   const fontColor = isDivisibleBy2 ? 'tan' : 'white';
