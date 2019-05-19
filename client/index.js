@@ -14,7 +14,6 @@ class App extends React.Component {
     products: [],
     productsToDisplay: [],
     page: 1,
-    showDropdown: false,
     sortValue: '',
     showBackButton: false,
   }
@@ -22,14 +21,9 @@ class App extends React.Component {
   async componentDidMount() {
     const { page } = this.state;
     const products = await fetchProducts(page);
-    this.setState({ products, page: 2 });
+    const productsToDisplay = await fetchProducts(page + 1);
+    this.setState({ products, productsToDisplay, page: 2 });
     document.addEventListener('scroll', this.handleScrollEvent);
-  }
-
-  toggleDropdownVisibility = () => {
-    this.setState(prevState => ({
-      showDropdown: !prevState.showDropdown,
-    }));
   }
 
   handleScrollEvent = async () => {
@@ -48,19 +42,16 @@ class App extends React.Component {
       this.setState({ showBackButton: false });
     }
 
-    if (page === 2) {
-      const response = await fetchProducts(page, sortValue);
-      this.setState({ productsToDisplay: response, page: page + 1 });
-    } else if (productsToDisplay.length > 0 && scrollPercentage > 0.999) {
+    if (productsToDisplay.length > 0 && scrollPercentage > 0.99) {
       this.setState({
-        page: page + 1,
         products: [...products, ...productsToDisplay],
         productsToDisplay: [],
       });
-      const prefetched = await fetchProducts(page, sortValue);
 
+      const prefetched = await fetchProducts(page + 1, sortValue);
       this.setState({
         productsToDisplay: [...prefetched],
+        page: page + 1,
       });
     }
   }
@@ -70,8 +61,12 @@ class App extends React.Component {
       products: [], productsToDisplay: [],
     });
     const products = await fetchProducts(1, sortValue);
+    const productsToDisplay = await fetchProducts(2, sortValue);
     this.setState({
-      products, sortValue, page: 2,
+      products,
+      sortValue,
+      page: 2,
+      productsToDisplay,
     });
   }
 
@@ -281,7 +276,6 @@ const Label = styled.div`
   margin-top: 3px;
   font-size: 15px;
   color: ${colors.gray};
-
 `;
 
 const RadioContainer = styled.div`

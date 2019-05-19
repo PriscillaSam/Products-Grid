@@ -91,10 +91,6 @@ const DescriptionSection = styled(FlexContainer)`
   width: 200px;
 `;
 
-const PaddedText = styled(Text)`
-  padding: 0px;
-`;
-
 const Section = styled.div``;
 
 const CardRule = styled.div`
