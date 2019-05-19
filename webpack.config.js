@@ -5,12 +5,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
   mode: 'development',
   entry: [
-    'webpack/hot/only-dev-server',
-    './public/index.js',
+    './client/index.js',
   ],
   output: {
     filename: 'bundle.js',
-    path: path.join(__dirname, '/dist'),
+    path: path.join(__dirname, '/public'),
   },
   module: {
     rules: [
@@ -31,14 +30,14 @@ module.exports = {
   resolve: {
     extensions: ['.jsx', '.js'],
     alias: {
-      Components: path.resolve(__dirname, 'public/src/components'),
-      Atoms: path.resolve(__dirname, 'public/src/components/atoms/'),
-      Molecules: path.resolve(__dirname, 'public/src/components/molecules/'),
-      Constants: path.resolve(__dirname, 'public/src/constants/'),
-      Utilities: path.resolve(__dirname, 'public/src/utilities/'),
+      Components: path.resolve(__dirname, 'client/src/components'),
+      Atoms: path.resolve(__dirname, 'client/src/components/atoms/'),
+      Molecules: path.resolve(__dirname, 'client/src/components/molecules/'),
+      Constants: path.resolve(__dirname, 'client/src/constants/'),
+      Utilities: path.resolve(__dirname, 'client/src/utilities/'),
     },
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: './public/index.html' }),
+    new HtmlWebpackPlugin({ template: './client/index.html' }),
   ],
 };

@@ -5,17 +5,17 @@ import styled from 'styled-components';
 import colors from 'Constants/colours';
 
 const textSizes = {
-  default: '16',
+  default: '14',
   large: '36',
 };
 
 const TextComponent = ({
-  text, type, size, colourClass, toggleSortOrder
+  text, type, size, colourClass,
 }) => {
   const fontSize = type === 'fontText' ? size : textSizes[type];
 
   return (
-    <Text onClick={() => toggleSortOrder && toggleSortOrder(text)} fontSize={fontSize} color={colors[colourClass]}>
+    <Text fontSize={fontSize} color={colors[colourClass]} type={type}>
       {text}
     </Text>
   );
@@ -24,10 +24,10 @@ const TextComponent = ({
 const Text = styled.p`
   color: ${props => props.color};
   font-size: ${props => props.fontSize}px;
-  
-  .hasPadding {
-  padding: 10px;
-  }
+  font-family: 'Roboto', sans-serif;
+  font-weight: ${props => (props.type === 'fontText' ? 400 : 300)};
+  padding: 10px 0;
+  margin: 0;
 `;
 
 TextComponent.propTypes = {

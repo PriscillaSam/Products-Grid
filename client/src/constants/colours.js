@@ -4,7 +4,8 @@ const colors = {
   white: '#FFFFFF',
   gray: '#837F7F',
   sienna: '#9E4823',
-  lightGrey: '#E5E5E5',
+  lightGrey: '#FAFAFA',
+  darkGrey: '#E5E5E5',
 };
 
 export default colors;
